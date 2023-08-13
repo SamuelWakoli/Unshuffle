@@ -1,6 +1,6 @@
 package com.example.unshuffle.data
 
-const val MAX_ROUNDS = 20
+const val MAX_ROUNDS = 10
 const val MAX_SCORE = 100
 const val SCORE_REWARD = 5
 
