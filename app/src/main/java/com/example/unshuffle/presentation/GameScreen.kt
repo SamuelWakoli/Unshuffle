@@ -35,6 +35,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.unshuffle.data.MAX_ROUNDS
+import com.example.unshuffle.data.MAX_SCORE
 
 
 @Composable
@@ -59,8 +61,14 @@ fun GameScreen(gameViewModel: GameViewModel = viewModel()) {
             isError = gameUIState.isWordWrong
         )
         Spacer(modifier = Modifier.height(20.dp))
-        GameController(onSubmitWord = { gameViewModel.onSubmit() },onSkip = { gameViewModel.onSkip() })
+        GameController(
+            onSubmitWord = { gameViewModel.onSubmit() },
+            onSkip = { gameViewModel.onSkip() })
         Spacer(modifier = Modifier.height(80.dp))
+        if (gameUIState.currentRound >= MAX_ROUNDS) GameScreenDialog(
+            score = gameUIState.score,
+            onPlayAgain = { gameViewModel.resetGame() }
+        )
     }
 }
 
@@ -71,21 +79,18 @@ fun GameScreenPreview() {
 }
 
 @Composable
-fun GameScreenDialog() {
+fun GameScreenDialog(
+    score: Int,
+    onPlayAgain: () -> Unit
+) {
     val activity = (LocalContext.current as Activity)
     AlertDialog(
         title = { Text(text = "Congratulations!") },
-        text = { Text(text = "You have scored: ") },
-        onDismissRequest = { /**/ },
-        confirmButton = { TextButton(onClick = { /*TODO*/ }) { Text(text = "Play Again") } },
+        text = { Text(text = "You have scored: $score") },
+        onDismissRequest = { /*an empty lambda prevents user from dismissing dialog by clicking outside*/ },
+        confirmButton = { TextButton(onClick = { onPlayAgain() }) { Text(text = "Play Again") } },
         dismissButton = { TextButton(onClick = { activity.finish() }) { Text(text = "Exit") } }
     )
-}
-
-@Preview
-@Composable
-fun GameScreenDialogPreview() {
-    GameScreenDialog()
 }
 
 @Composable
@@ -121,7 +126,7 @@ fun ScoreBoardPreview() {
 fun GameController(onSubmitWord: () -> Unit, onSkip: () -> Unit) {
     Column(Modifier.padding(8.dp)) {
         Button(
-            onClick = onSubmitWord ,
+            onClick = onSubmitWord,
             modifier = Modifier.width(200.dp),
         ) {
             Text(text = "Submit")
@@ -162,7 +167,7 @@ fun GameLayout(
                         modifier = Modifier.align(alignment = Alignment.CenterHorizontally),
                         fontSize = 8.sp,
                     )
-                    Text(fontSize = 10.sp, text = "$round/10")
+                    Text(fontSize = 10.sp, text = "$round/$MAX_ROUNDS")
                 }
             }
             Text(

@@ -49,7 +49,6 @@ class GameViewModel : ViewModel() {
     }
 
     fun onSubmit() {
-        unshuffledWord = ""
         if (unshuffledWord.equals(currentWord, ignoreCase = true)) {
 
             _uiState.update { currentState ->
@@ -67,6 +66,7 @@ class GameViewModel : ViewModel() {
                 )
             }
         }
+        unshuffledWord = ""
     }
 
     fun onSkip() {
