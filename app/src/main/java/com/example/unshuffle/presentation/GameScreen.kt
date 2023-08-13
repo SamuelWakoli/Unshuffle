@@ -39,8 +39,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun GameScreen(gameViewModel: GameViewModel = viewModel()) {
-    val gameUIState by gameViewModel.UiState.collectAsState()
-
+    val gameUIState by gameViewModel.uiState.collectAsState()
 
     Column(
         modifier = Modifier
@@ -49,11 +48,18 @@ fun GameScreen(gameViewModel: GameViewModel = viewModel()) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        ScoreBoard()
+        ScoreBoard(gameUIState.score)
         Spacer(modifier = Modifier.height(20.dp))
-        GameLayout()
+        GameLayout(
+            round = gameUIState.currentRound,
+            currentWord = gameUIState.currentWord,
+            wordInput = gameViewModel.unshuffledWord,
+            onWordInputChange = { gameViewModel.setWordInput(it) },
+            onSubmitWord = { gameViewModel.onSubmit() },
+            isError = gameUIState.isWordWrong
+        )
         Spacer(modifier = Modifier.height(20.dp))
-        GameController()
+        GameController(onSubmitWord = { gameViewModel.onSubmit() },onSkip = { gameViewModel.onSkip() })
         Spacer(modifier = Modifier.height(80.dp))
     }
 }
@@ -72,7 +78,7 @@ fun GameScreenDialog() {
         text = { Text(text = "You have scored: ") },
         onDismissRequest = { /**/ },
         confirmButton = { TextButton(onClick = { /*TODO*/ }) { Text(text = "Play Again") } },
-        dismissButton = { TextButton(onClick = { /*TODO*/ }) { Text(text = "Exit") } }
+        dismissButton = { TextButton(onClick = { activity.finish() }) { Text(text = "Exit") } }
     )
 }
 
@@ -83,7 +89,7 @@ fun GameScreenDialogPreview() {
 }
 
 @Composable
-fun ScoreBoard() {
+fun ScoreBoard(score: Int) {
     Card(
         Modifier
             .padding(8.dp)
@@ -96,7 +102,7 @@ fun ScoreBoard() {
         ) {
             Text(text = "Score", fontSize = 10.sp, fontWeight = FontWeight.Bold)
             Text(
-                text = "100",
+                text = "$score",
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
@@ -108,20 +114,20 @@ fun ScoreBoard() {
 @Preview(showBackground = true)
 @Composable
 fun ScoreBoardPreview() {
-    ScoreBoard()
+    ScoreBoard(100)
 }
 
 @Composable
-fun GameController() {
+fun GameController(onSubmitWord: () -> Unit, onSkip: () -> Unit) {
     Column(Modifier.padding(8.dp)) {
         Button(
-            onClick = { /*TODO*/ },
+            onClick = onSubmitWord ,
             modifier = Modifier.width(200.dp),
         ) {
             Text(text = "Submit")
         }
         OutlinedButton(
-            onClick = { /*TODO*/ },
+            onClick = onSkip,
             modifier = Modifier.width(200.dp),
         ) {
             Text(text = "Skip")
@@ -129,15 +135,16 @@ fun GameController() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun GameControllerPreview() {
-    GameController()
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GameLayout() {
+fun GameLayout(
+    round: Int,
+    currentWord: String,
+    wordInput: String,
+    onWordInputChange: (String) -> Unit,
+    onSubmitWord: () -> Unit,
+    isError: Boolean
+) {
     Card {
         Column(
             modifier = Modifier.padding(4.dp)
@@ -155,7 +162,7 @@ fun GameLayout() {
                         modifier = Modifier.align(alignment = Alignment.CenterHorizontally),
                         fontSize = 8.sp,
                     )
-                    Text(fontSize = 10.sp, text = "1/10")
+                    Text(fontSize = 10.sp, text = "$round/10")
                 }
             }
             Text(
@@ -171,7 +178,7 @@ fun GameLayout() {
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "CurrentWord",
+                text = currentWord,
                 modifier = Modifier.align(alignment = Alignment.CenterHorizontally),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
@@ -179,16 +186,21 @@ fun GameLayout() {
             )
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = wordInput,
+                onValueChange = onWordInputChange,
                 shape = MaterialTheme.shapes.medium,
-                label = { Text(text = "Enter your word") },
-                isError = false,
+                label = {
+                    when {
+                        isError -> Text(text = "Please try again")
+                        else -> Text(text = "Enter your word")
+                    }
+                },
+                isError = isError,
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Done
                 ),
                 keyboardActions = KeyboardActions(
-                    onDone = { /*todo*/ }
+                    onDone = { onSubmitWord() }
                 ),
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = MaterialTheme.colorScheme.background
@@ -196,10 +208,4 @@ fun GameLayout() {
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun GameLayoutPreview() {
-    GameLayout()
 }
