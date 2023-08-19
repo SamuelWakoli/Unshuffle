@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.unshuffle.data.MAX_ROUNDS
-import com.example.unshuffle.data.MAX_SCORE
 
 
 @Composable
