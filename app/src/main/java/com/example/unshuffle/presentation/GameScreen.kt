@@ -97,17 +97,18 @@ fun GameScreenDialog(
 fun ScoreBoard(score: Int) {
     Card(
         Modifier
-            .padding(8.dp)
+            .padding(12.dp)
             .width(100.dp)
     ) {
         Column(
             modifier = Modifier
-                .padding(8.dp)
+                .padding(12.dp)
                 .align(alignment = Alignment.CenterHorizontally)
         ) {
-            Text(text = "Score", fontSize = 10.sp, fontWeight = FontWeight.Bold)
+            Text(text = "Score", fontSize = 14.sp, fontWeight = FontWeight.Bold)
             Text(
                 text = "$score",
+                fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
@@ -124,16 +125,17 @@ fun ScoreBoardPreview() {
 
 @Composable
 fun GameController(onSubmitWord: () -> Unit, onSkip: () -> Unit) {
-    Column(Modifier.padding(8.dp)) {
+    Column(Modifier.padding(12.dp)) {
         Button(
             onClick = onSubmitWord,
-            modifier = Modifier.width(200.dp),
+            modifier = Modifier.width(300.dp),
         ) {
             Text(text = "Submit")
         }
+        Spacer(modifier = Modifier.height(8.dp))
         OutlinedButton(
             onClick = onSkip,
-            modifier = Modifier.width(200.dp),
+            modifier = Modifier.width(300.dp),
         ) {
             Text(text = "Skip")
         }
@@ -152,7 +154,7 @@ fun GameLayout(
 ) {
     Card {
         Column(
-            modifier = Modifier.padding(4.dp)
+            modifier = Modifier.padding(16.dp)
         ) {
             Card(
                 modifier = Modifier.align(alignment = Alignment.End),
@@ -161,27 +163,26 @@ fun GameLayout(
                 ),
             ) {
 
-                Column(modifier = Modifier.padding(horizontal = 8.dp)) {
+                Column(modifier = Modifier.padding(horizontal = 12.dp)) {
                     Text(
                         text = "Round",
                         modifier = Modifier.align(alignment = Alignment.CenterHorizontally),
-                        fontSize = 8.sp,
                     )
-                    Text(fontSize = 10.sp, text = "$round/$MAX_ROUNDS")
+                    Text(fontSize = 16.sp, text = "$round/$MAX_ROUNDS")
                 }
             }
             Text(
                 text = "Unshuffle",
                 modifier = Modifier.align(alignment = Alignment.CenterHorizontally),
-                fontSize = 18.sp,
+                fontSize = 20.sp,
                 color = MaterialTheme.colorScheme.primary,
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = "Use all letters below to form a word",
                 modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = currentWord,
                 modifier = Modifier.align(alignment = Alignment.CenterHorizontally),
@@ -189,7 +190,7 @@ fun GameLayout(
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             OutlinedTextField(
                 value = wordInput,
                 onValueChange = onWordInputChange,
