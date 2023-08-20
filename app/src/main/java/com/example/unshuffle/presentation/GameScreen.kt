@@ -162,9 +162,13 @@ fun GameLayout(
                 ),
             ) {
 
-                Column(modifier = Modifier.padding(horizontal = 12.dp)) {
+                Column(
+                    modifier = Modifier.padding(4.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
                     Text(
                         text = "Round",
+                        fontSize = 14.sp,
                         modifier = Modifier.align(alignment = Alignment.CenterHorizontally),
                     )
                     Text(fontSize = 16.sp, text = "$round/$MAX_ROUNDS")
